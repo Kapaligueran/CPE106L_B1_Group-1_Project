@@ -1,9 +1,3 @@
-# A cpe106l_b1_group-1_project Flet app
+# CPE106L B1 Group 1 Project: Movie Rental System
 
-An example of a minimal Flet app.
-
-To run the app:
-
-```
-flet run [app_directory]
-```
+How to download and run the program:
