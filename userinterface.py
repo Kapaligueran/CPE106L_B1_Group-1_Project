@@ -12,4 +12,5 @@ def main(page: ft.Page):
     page.go('/login')
 
 
-ft.app(target=main, assets_dir='assets')
+if __name__ == '__main__':
+    ft.app(target=main)

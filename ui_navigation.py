@@ -1,5 +1,5 @@
 import flet as ft
-from flet import View, Page, AppBar, ElevatedButton, Text
+from flet import View, Page, AppBar, ElevatedButton, Text, TextField
 from flet import RouteChangeEvent, ViewPopEvent, CrossAxisAlignment, MainAxisAlignment
 
 
@@ -9,20 +9,47 @@ def main(page: Page) -> None:
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
 
-        # Home
+        #Login
         page.views.append(
             View(
-                route='/home',
+                route='/login',
                 controls=[
-                    AppBar(title=Text('Home'), bgcolor='blue'),
-                    Text(value='Home', size=30),
-                    ElevatedButton(text='Go to store', on_click=lambda _: page.go('/store'))
+
                 ],
                 vertical_alignment=MainAxisAlignment.CENTER,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
                 spacing=26
             )
         )
+        #Signup
+        if page.route == '/signup':
+            page.views.append(
+                View(
+                    route='/signup',
+                    controls=[
+
+                    ],
+                    vertical_alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+                )
+            )
+
+        # Home
+        if page.route == '/home':
+            page.views.append(
+                View(
+                    route='/home',
+                    controls=[
+                        AppBar(title=Text('Home'), bgcolor='blue'),
+                        Text(value='Home', size=30),
+                        ElevatedButton(text='Go to store', on_click=lambda _: page.go('/store'))
+                    ],
+                    vertical_alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+                )
+            )
 
         # Store
         if page.route == '/store':
