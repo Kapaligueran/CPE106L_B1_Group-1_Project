@@ -1,5 +1,4 @@
 import bcrypt
-
 import dataaccess as da
 
 database = da.DatabaseManagement('MovieRentalDB.db')

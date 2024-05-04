@@ -182,7 +182,7 @@ class MovieRentalApp:
         signup_button2.place(x=505, y=380)
 
     def create_navigation_tabs(self):
-        self.tabView = ctk.CTkTabview(self.app, bg_color='#001220', fg_color='#fff', selected_fg_color='#fff',
+        self.tabView = ctk.CTkTabview(self.app, bg_color='#001220', fg_color='#fff', segmented_button_selected_color='#001220',
                                       border_color='#001220', corner_radius=10, width=880, height=550)
         self.tabView.pack(padx=10, pady=10)
 
@@ -208,6 +208,7 @@ class MovieRentalApp:
             if bl.check_if_user_does_not_exist(username):
                 bl.create_account(username, password, given_name, middle_name, last_name, suffix, email, phone_number)
                 messagebox.showinfo('Success', 'Account has been created.')
+                self.create_navigation_tabs()
             else:
                 messagebox.showerror('Error', 'Username already exists.')
         else:
@@ -220,6 +221,7 @@ class MovieRentalApp:
             if not bl.check_if_user_does_not_exist(username):
                 if bl.verify_password(username, password):
                     messagebox.showinfo('Success', 'Logged in successfully.')
+                    self.create_navigation_tabs()
                 else:
                     messagebox.showerror('Error', 'Invalid password.')
             else:
