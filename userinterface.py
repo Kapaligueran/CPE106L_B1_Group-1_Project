@@ -193,14 +193,5 @@ login_button = ctk.CTkButton(frame1, command=login, font=font2, text_color='#fff
                              corner_radius=5, width=120)
 login_button.place(x=390, y=310)
 
-# Insert into database
 
-
-# Display movies
-
-
-# Display movies previously rented by the user
-
-
-#
 app.mainloop()
