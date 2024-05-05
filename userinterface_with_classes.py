@@ -6,6 +6,9 @@ import businesslogic as bl
 
 class MovieRentalApp:
     def __init__(self):
+        self.current_user_id = None
+        self.movie_table_frame = None
+        self.movie_details_frame = None
         self.reviews_tab = None
         self.rented_tab = None
         self.wishlist_tab = None
@@ -182,11 +185,13 @@ class MovieRentalApp:
         signup_button2.place(x=505, y=380)
 
     def create_navigation_tabs(self):
-        self.tabView = ctk.CTkTabview(self.app, bg_color='#001220', fg_color='#fff', segmented_button_selected_color='#001220',
+        self.tabView = ctk.CTkTabview(self.app, bg_color='#001220', fg_color='#fff',
+                                      segmented_button_selected_color='#001220',
                                       border_color='#001220', corner_radius=10, width=880, height=550)
-        self.tabView.pack(padx=10, pady=10)
+        self.tabView.pack(padx=10, pady=10, expand=1)
 
         self.tabView.add('Movie Catalog')
+        self.display_movie_catalog()
         self.tabView.add('Cart')
         self.tabView.add('Wish List')
         self.tabView.add('Rented Movies')
@@ -208,6 +213,7 @@ class MovieRentalApp:
             if bl.check_if_user_does_not_exist(username):
                 bl.create_account(username, password, given_name, middle_name, last_name, suffix, email, phone_number)
                 messagebox.showinfo('Success', 'Account has been created.')
+                self.current_user_id = bl.get_current_user_id(username)
                 self.create_navigation_tabs()
             else:
                 messagebox.showerror('Error', 'Username already exists.')
@@ -220,7 +226,8 @@ class MovieRentalApp:
         if bl.check_if_login_not_empty(username, password):
             if not bl.check_if_user_does_not_exist(username):
                 if bl.verify_password(username, password):
-                    messagebox.showinfo('Success', 'Logged in successfully.')
+                    # messagebox.showinfo('Success', 'Logged in successfully.')
+                    self.current_user_id = bl.get_current_user_id(username)
                     self.create_navigation_tabs()
                 else:
                     messagebox.showerror('Error', 'Invalid password.')
@@ -228,6 +235,73 @@ class MovieRentalApp:
                 messagebox.showerror('Error', 'Invalid username.')
         else:
             messagebox.showerror('Error', 'Enter all data.')
+
+    def add_to_cart(self, movie_id):
+        user_id = self.current_user_id
+        if not bl.check_if_movie_in_cart(user_id, movie_id):
+            bl.add_to_cart(user_id, movie_id)
+            messagebox.showinfo('Success', 'Movie added to your cart.')
+        else:
+            messagebox.showerror('Error', 'Movie is already in your cart.')
+
+    # Display movie catalog
+    def display_movie_catalog(self):
+        movies = bl.get_movie_catalog()
+        # Display headers
+        headers = ['ID', 'Title']
+        self.movie_table_frame = ctk.CTkFrame(self.tabView.tab("Movie Catalog"), bg_color='#001220')
+        self.movie_table_frame.grid(row=0, column=0, sticky='nsew')
+        self.movie_table_frame.columnconfigure(0, weight=1)  # Make column expandable
+
+        scrollable_frame = ctk.CTkScrollableFrame(self.movie_table_frame, bg_color='#001220')
+        scrollable_frame.grid(row=0, column=0, sticky='nsew')
+        scrollable_frame.grid_rowconfigure(0, weight=1)
+        scrollable_frame.grid_columnconfigure(0, weight=1)
+
+        column_widths = [10, 40]
+        for i, (header, width) in enumerate(zip(headers, column_widths)):
+            label = ctk.CTkLabel(scrollable_frame, text=header, font=self.font2, bg_color='#001220', text_color='#fff')
+            label.grid(row=0, column=i, padx=5, pady=5, ipadx=width, sticky='ew')  # Use ipadx to set the column width
+
+        for row, movie in enumerate(movies, start=1):
+            for col, (data, width) in enumerate(zip(movie, column_widths), start=0):
+                label = ctk.CTkLabel(scrollable_frame, text=str(data), font=self.font3, bg_color='#001220',
+                                     text_color='#fff')
+                label.grid(row=row, column=col, padx=5, pady=5, ipadx=width,
+                           sticky='ew')  # Use ipadx to set the column width
+                if col == 1:  # Title column
+                    label.bind("<Button-1>",
+                               lambda event, movie_id=movie[0]: self.display_movie_details(bl.select_movie(movie_id)))
+
+    def display_movie_details(self, movie_details):
+        # Check if movie_details_frame exists and destroy it if it does
+        if hasattr(self, 'movie_details_frame') and self.movie_details_frame:
+            self.movie_details_frame.destroy()
+        # Create a new movie_details_frame
+        self.movie_details_frame = ctk.CTkFrame(self.tabView.tab("Movie Catalog"), bg_color='#001220')
+        self.movie_details_frame.grid(row=0, column=5, rowspan=10, padx=20, pady=20)
+
+        title_label = ctk.CTkLabel(self.movie_details_frame, text=f"Title: {movie_details[1]}", font=self.font3,
+                                   bg_color='#001220', text_color='#fff', justify='left')
+        title_label.grid(row=0, column=0, padx=10, pady=5, sticky='w')
+
+        synopsis_label = ctk.CTkLabel(self.movie_details_frame, text=f"Synopsis: {movie_details[2]}", font=self.font3,
+                                      bg_color='#001220', text_color='#fff', wraplength=600, justify='left')
+        synopsis_label.grid(row=1, column=0, padx=10, pady=5, sticky='w')
+
+        genre_label = ctk.CTkLabel(self.movie_details_frame, text=f"Genre: {movie_details[3]}", font=self.font3,
+                                   bg_color='#001220', text_color='#fff', justify='left')
+        genre_label.grid(row=2, column=0, padx=10, pady=5, sticky='w')
+
+        price_label = ctk.CTkLabel(self.movie_details_frame, text=f"Price: {movie_details[4]}", font=self.font3,
+                                   bg_color='#001220', text_color='#fff', justify='left')
+        price_label.grid(row=3, column=0, padx=10, pady=5, sticky='w')
+
+        add_to_cart_button = ctk.CTkButton(self.movie_details_frame,
+                                           command=lambda movie_id=movie_details[0]: self.add_to_cart(movie_id),
+                                           text="Add to Cart", fg_color='#00965d', hover_color='#006e44',
+                                           bg_color='#121111', cursor='hand2', corner_radius=5, width=30)
+        add_to_cart_button.grid(row=4, column=0, padx=10, pady=10, sticky='ew')
 
     def start(self):
         self.app.mainloop()

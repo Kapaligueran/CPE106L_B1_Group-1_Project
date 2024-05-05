@@ -97,13 +97,43 @@ def create_account(username, password, given_name, middle_name, last_name, suffi
         middle_name = None
     if suffix == '':
         suffix = None
-    print(hashed_password)
     database.create_user(username, hashed_password, given_name, middle_name, last_name, suffix, email, phone_number)
 
 
+# Function to verify is user inputted correct password
 def verify_password(username, password):
     saved_password = database.get_password(username)
     if bcrypt.checkpw(password.encode('utf-8'), saved_password[0]):
+        return True
+    else:
+        return False
+
+
+def get_movie_catalog():
+    return database.view_movie_catalog()
+
+
+def select_movie(movie_id):
+    current_movie_id = movie_id
+    selected_movie = database.get_movie_details(current_movie_id)
+    return selected_movie
+
+
+# Function to get the current user's ID
+def get_current_user_id(username):
+    user_id_tuple = database.get_user_id(username)
+    user_id = user_id_tuple[0] if user_id_tuple else None
+    return user_id
+
+
+# Function to add a movie to a user's cart
+def add_to_cart(user_id, movie_id):
+    database.add_movie_to_cart(user_id, movie_id)
+
+
+# Function to check if movie is already in a user's cart
+def check_if_movie_in_cart(user_id, movie_id):
+    if database.select_movie_in_cart(user_id, movie_id) is not None:
         return True
     else:
         return False
