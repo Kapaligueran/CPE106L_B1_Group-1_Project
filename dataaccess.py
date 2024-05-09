@@ -28,10 +28,6 @@ class DatabaseManagement:
         self.cur.execute("SELECT User_ID FROM [User] WHERE Username=?", (username,))
         return self.cur.fetchone()
 
-    # Deleting a user's account
-
-    # Adding a movie to the catalog
-
     # Viewing a movie's details
     def get_movie_details(self, movie_id):
         self.cur.execute("SELECT * FROM Movie WHERE Movie_ID=?", (movie_id,))
@@ -48,10 +44,6 @@ class DatabaseManagement:
         self.cur.execute("SELECT * FROM Movie")
         return self.cur.fetchall()
 
-    # Updating a movie's details
-
-    # Deleting a movie from the catalog
-
     # Creating a new rental for a user
     def create_rental(self, user_id, rental_date, return_date, movie_id):
         self.cur.execute("INSERT INTO Rental (User_ID, Rental_Date, Return_Date, Movie_ID, isOngoing) VALUES (?, ?, "
@@ -60,7 +52,6 @@ class DatabaseManagement:
         pass
 
     # Viewing a user's rentals
-
     def view_user_rented_movies(self, user_id):
         self.cur.execute(
             "SELECT Movie.Title, Rental.Rental_Date, Rental.Return_Date FROM (Rental INNER JOIN Movie ON "
@@ -92,8 +83,6 @@ class DatabaseManagement:
             (user_id,))
         return self.cur.fetchall()
 
-    # Updating a user's cart
-
     # Emptying a user's cart
     def remove_from_cart(self, user_id, movie_id):
         self.cur.execute("DELETE FROM Cart WHERE User_ID=? AND Cart.Movie_ID=?", (user_id, movie_id))
@@ -112,8 +101,6 @@ class DatabaseManagement:
             "Movie.Movie_ID")
         return self.cur.fetchall()
 
-    # Deleting a movie's reviews
-
     # Creating a user's wish list
     def add_movie_to_wishlist(self, user_id, movie_id):
         self.cur.execute("INSERT INTO WishList (User_ID, Movie_ID) VALUES (?, ?)", (user_id, movie_id))
@@ -130,8 +117,6 @@ class DatabaseManagement:
             "SELECT Movie.Title FROM (WishList INNER JOIN Movie ON WishList.Movie_ID = Movie.Movie_ID) WHERE User_ID=?",
             (user_id,))
         return self.cur.fetchall()
-
-    # Updating a user's wish list
 
     # Removing a movie from a user's wish list
     def remove_from_wishlist(self, user_id, movie_id):

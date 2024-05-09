@@ -100,10 +100,12 @@ def verify_password(username, password):
         return False
 
 
+# Function for getting the whole movie catalog
 def get_movie_catalog():
     return database.view_movie_catalog()
 
 
+# Function for selecting a movie
 def select_movie(movie_id):
     current_movie_id = movie_id
     selected_movie = database.get_movie_details(current_movie_id)
@@ -117,6 +119,7 @@ def get_current_user_id(username):
     return user_id
 
 
+# Function for getting a user's cart
 def get_user_cart(user_id):
     return database.view_user_cart(user_id)
 
@@ -140,6 +143,7 @@ def remove_from_cart(user_id, title):
     database.remove_from_cart(user_id, movie_id)
 
 
+# Function for getting a user's wishlist
 def get_user_wishlist(user_id):
     return database.view_user_wishlist(user_id)
 
@@ -164,6 +168,7 @@ def check_if_movie_in_cart(user_id, movie_id):
         return False
 
 
+# Function to check if a movie is in a user's cart based on its title
 def check_if_movie_in_cart_from_title(user_id, title):
     movie_id_tuple = database.get_movie_id_from_title(title)
     movie_id = movie_id_tuple[0]
@@ -181,10 +186,12 @@ def check_if_movie_in_wishlist(user_id, movie_id):
         return False
 
 
+# Function for getting the list of a user's rented movies
 def get_user_rented_movies(user_id):
     return database.view_user_rented_movies(user_id)
 
 
+# Function for checking a movie out of a user's cart and renting that movie
 def checkout(user_id, title):
     movie_id_tuple = database.get_movie_id_from_title(title)
     movie_id = movie_id_tuple[0]
@@ -194,15 +201,18 @@ def checkout(user_id, title):
     database.remove_from_cart(user_id, movie_id)
 
 
+# Function for returning a movie from being rented
 def return_movie(user_id, rental_date, return_date, title):
     movie_id_tuple = database.get_movie_id_from_title(title)
     movie_id = movie_id_tuple[0]
     database.finish_rental(user_id, rental_date, return_date, movie_id)
 
 
+# Function for viewing all reviews
 def get_reviews():
     return database.view_reviews()
 
 
+# Function for submitting review
 def submit_review(movie_id, rating, review):
     database.submit_review(movie_id, rating, review)
